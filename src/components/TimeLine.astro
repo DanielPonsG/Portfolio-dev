@@ -1,0 +1,30 @@
+---
+import Experience from "./Experience.astro"
+
+const Experiencia = [
+    {
+        title: "Estudiante Ingeniería Informática",
+        date: "2023 - Presente",
+        description: "Estudiando en Instituto Profesional INACAP, en la carrera de Ingeniería Informática. Cursando último semestre."
+    },
+    {
+        title: "Trainee en Desarrollo de Software",
+        date: "Octubre 2022 -  Enero 2023",
+        description: "Desarrollador Full Stack en la empresa de desarrollo de software",
+        link: "#"
+    }
+]
+---
+
+<!-- RECORRER LINEA DE TIEMPO CON LOS DATOS DENTRO DEL ARRAY -->
+<ol class="relative border-s border-gray-200 dark:border-gray-700 ml-3">
+
+    {
+        Experiencia.map(experiencia => (
+         <li class="mb-10 ms-7">
+            <Experience {...experiencia}/>
+        </li> 
+        ))
+    }
+
+</ol>

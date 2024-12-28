@@ -1,11 +1,70 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import Badge from "../components/Badge.astro";
+import LinkedIn from "../icons/LinkedIn.astro";
+import Social from "../components/Social.astro";
+import GitHub from "../icons/GitHub.astro";
+import Mail from "../icons/Mail.astro";
+import TimeLine from "../components/TimeLine.astro";
+import Section from "../components/Section.astro";
+import Suitcase from "../icons/Suitcase.astro";
+import Code from "../icons/Code.astro";
+import Projects from "../components/Projects.astro";
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+	title="Portfolio Daniel Pons Analista Programador"
+	description="Daniel Pons Analista Programador"
+>
+	<main class="px-4">
+		<Section class="py-44 pb-32">
+			<img class="rounded-full size-12 mb-4" src="" alt="Foto" />
+			<h1
+				class="text-white text-3xl md:text-4xl lg:text-5xl font-bold flex flex-row gap-x-4 pb-6 lg:pb-10"
+			>
+				Hola, Soy Daniel <a
+					href="https://linkedin.com/in/danielponsg"
+					target="_blank"><Badge> Disponible </Badge></a
+				>
+			</h1>
+			<h2 class="text-xl lg:text-2xl text-wrap max-w-[700px]">
+				1 Año de experiencia, Estudiante de INACAP, Titulado como
+				Analista programador. De Santiago, Chile
+			</h2>
+
+			<nav class="flex gap-4 mt-8 flex-wrap">
+				<Social href="https://linkedin.com/in/danielponsg">
+					<LinkedIn class="size-4 md:size-6" />
+					LinkedIn
+				</Social>
+				<Social href="https://github.com/DanielPonsG">
+					<GitHub class="size-4 md:size-6" />
+					GitHub
+				</Social>
+				<Social href="mailto:danielpons44@gmail.com">
+					<Mail class="size-4 md:size-6" />
+					Danielpons44@gmail.com
+				</Social>
+			</nav>
+		</Section>
+
+		<Section id="experiencia">
+			<h2 class="text-4xl font-semibold mb-6 flex gap-x-3 items-center ">
+				<Suitcase class="size-7"/>
+				Experiencia
+			</h2>
+			<TimeLine />
+		</Section>
+
+		<Section id="proyectos">
+			<h2 class="text-4xl font-semibold mb-6 flex gap-x-3 items-center ">
+				<Code class="size-7"/>
+				Proyectos
+			</h2>
+			<Projects />
+		</Section>
+	</main>
 </Layout>

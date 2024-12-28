@@ -1,0 +1,53 @@
+---
+import HTML from "../icons/HTML.astro";
+import CSS from "../icons/CSS.astro";
+
+const Tags = {
+    Html: {
+        name: "HTML",
+        class: "bg-black text-white",
+        icon: HTML,
+    },
+    Css: {
+        name: "CSS",
+        class: "bg-blue-500 text-white",
+        icon: CSS,
+    },
+};
+
+const Proyectos = [
+    {
+        title: "Proyecto 1",
+        description: "Descripción del proyecto 1",
+        img: "/public/svgl.webp",
+        link: "https://svgl.vercel.app/",
+        tags: [Tags.Html, Tags.Css],
+    },
+];
+---
+
+{
+    Proyectos.map(({title, description, img, tags}) => (
+        <article>
+            <h3 class="text-2xl font-semibold text-yellow-200 mb-2">
+                {title}
+            </h3>
+            <p class=" text-lg mb-4 text-pretty">{description}</p>
+            <ul class="flex gap-x-4 flex-row mb-2">
+                {tags.map((tag) => (
+                    <li>
+                        <span class={`flex gap-x-2 rounded-full text-xs ${tag.class} py-1 px-2`}>
+                            <tag.icon class="size-4"/>
+                            {tag.name}
+                        </span>
+                    </li>
+                ))}
+            </ul>
+            <img
+                class="rounded shadow-2xl shadow-white/10"
+                src={img}
+                alt={title}
+            />
+        </article>
+    ))
+}
