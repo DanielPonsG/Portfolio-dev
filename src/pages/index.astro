@@ -21,13 +21,18 @@ import Projects from "../components/Projects.astro";
 >
 	<main class="px-4">
 		<Section class="py-44 pb-32">
-			<img class="rounded-full size-12 mb-4" src="" alt="Foto" />
+			<img
+				class="rounded-full size-20 mb-4"
+				src="/public/svgl.webp"
+				alt="Foto"
+			/>
 			<h1
 				class="text-white text-3xl md:text-4xl lg:text-5xl font-bold flex flex-row gap-x-4 pb-6 lg:pb-10"
 			>
-				Hola, Soy Daniel <a
+				Daniel Pons<a
 					href="https://linkedin.com/in/danielponsg"
-					target="_blank"><Badge> Disponible </Badge></a
+					target="_blank"
+					class="flex flex-col items-center justify-center"><Badge> Disponible para Trabajo </Badge></a
 				>
 			</h1>
 			<h2 class="text-xl lg:text-2xl text-wrap max-w-[700px]">
@@ -51,17 +56,17 @@ import Projects from "../components/Projects.astro";
 			</nav>
 		</Section>
 
-		<Section id="experiencia">
-			<h2 class="text-4xl font-semibold mb-6 flex gap-x-3 items-center ">
-				<Suitcase class="size-7"/>
+		<Section class="pb-20" id="experiencia">
+			<h2 class="text-4xl font-semibold mb-6 flex gap-x-3 items-center">
+				<Suitcase class="size-7" />
 				Experiencia
 			</h2>
 			<TimeLine />
 		</Section>
 
 		<Section id="proyectos">
-			<h2 class="text-4xl font-semibold mb-6 flex gap-x-3 items-center ">
-				<Code class="size-7"/>
+			<h2 class="text-4xl font-semibold mb-6 flex gap-x-3 items-center">
+				<Code class="size-7" />
 				Proyectos
 			</h2>
 			<Projects />

@@ -34,7 +34,7 @@ const { title, description } = Astro.props;
 		</div>
 		<Header />
 		<slot />
-		<Footer/>
+		<Footer />
 	</body>
 </html>
 
@@ -53,5 +53,16 @@ const { title, description } = Astro.props;
 		flex-direction: column;
 		min-height: 100vh;
 	}
-
+	header {
+		backdrop-filter: blur(10px);
+	}
+	header a {
+		border-radius: 10px;
+		padding: 5px;
+	}
+	header a:hover {
+		color: yellow;
+		scale: 1.1;
+		transition: all 0.2s;
+	}
 </style>
