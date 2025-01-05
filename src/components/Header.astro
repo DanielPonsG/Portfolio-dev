@@ -1,10 +1,17 @@
-<header class="flex fixed justify-center items-center py-5 w-full xl:w-[1265px] mx-auto left-auto rounded-sm z-10">
+<header class="flex fixed justify-center items-center py-5 w-full xl:w-[1265px] mx-auto left-auto rounded-sm z-10 backdrop-blur-sm">
 
     <nav class="flex flex-row gap-x-10 opacity-80">
-        <a href="#top">Inicio</a>
-        <a href="#experiencia">Experiencia</a>
-        <a href="#proyectos">Proyectos</a>
-        <a href="#contacto">Contacto</a>
+        <a class="nav-link" href="#top">Inicio</a>
+        <a class="nav-link" href="#experiencia">Experiencia</a>
+        <a class="nav-link" href="#proyectos">Proyectos</a>
+        <a class="nav-link" href="#contacto">Contacto</a>
     </nav>
     
 </header>
+
+<style>
+    .nav-link {
+        @apply hover:transition-all hover:scale-110 hover:text-blue-500 transition-all;
+    }
+</style>
+
