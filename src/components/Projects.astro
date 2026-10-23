@@ -1,8 +1,15 @@
 ---
 import HTML from "../icons/HTML.astro";
 import CSS from "../icons/CSS.astro";
+import { withBase } from "../utils/url";
 
-const Tags = {
+interface Tag {
+    name: string;
+    class: string;
+    icon?: typeof HTML;
+}
+
+const Tags: Record<string, Tag> = {
     Html: {
         name: "HTML",
         class: "bg-black text-white",
@@ -13,39 +20,53 @@ const Tags = {
         class: "bg-blue-500 text-white",
         icon: CSS,
     },
+    Astro: {
+        name: "Astro",
+        class: "bg-orange-600 text-white",
+    },
+    Tailwind: {
+        name: "Tailwind CSS",
+        class: "bg-sky-600 text-white",
+    },
+    Actions: {
+        name: "GitHub Actions",
+        class: "bg-gray-800 text-white",
+    },
 };
 
 const Proyectos = [
     {
         title: "Desarrollo de Sitio Web Personal con Astro y TailwindCSS",    
-        description: "Sitio web personal desarrollado con Astro y TailwindCSS, con el objetivo de mostrar mis habilidades y proyectos.",
-        img: "/public/projects/portfolio.webp",
-        link: "https://svgl.vercel.app/",
-        tags: [Tags.Html, Tags.Css],
+        description: "Sitio web personal desarrollado con Astro y Tailwind CSS, con integración y despliegue continuo en GitHub Pages mediante GitHub Actions.",
+        img: withBase("/projects/portfolio.webp"),
+        link: "https://github.com/DanielPonsG/Portfolio-dev",
+        tags: [Tags.Astro, Tags.Tailwind, Tags.Actions],
     },
 ];
 ---
 
 {
-    Proyectos.map(({title, description, img, tags}) => (
+    Proyectos.map(({title, description, img, link, tags}) => (
         <article class="max-w-full overflow-hidden p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
             <h3 class="text-lg font-semibold text-blue-800 mb-2">
-                {title}
+                <a href={link} target="_blank" rel="noopener noreferrer" class="hover:underline">
+                    {title}
+                </a>
             </h3>
-            <p class="mb-4 text-base font-normal text-justify text-blue-950">{description}</p>
-            <ul class="flex gap-x-4 flex-row mb-2">
-                {tags.map((tag) => (
+            <p class="mb-4 text-base font-normal text-blue-950">{description}</p>
+            <ul class="flex flex-wrap gap-2 flex-row mb-2">
+                {tags.map(({ name, class: className, icon: Icon }) => (
                     <li>
-                        <span class={`flex gap-x-2 rounded-full text-xs ${tag.class} py-1 px-2`}>
-                            <tag.icon class="size-4"/>
-                            {tag.name}
+                        <span class={`flex gap-x-2 rounded-full text-xs ${className} py-1 px-2`}>
+                            {Icon && <Icon class="size-4"/>}
+                            {name}
                         </span>
                     </li>
                 ))}
             </ul>
             <div class="relative w-full h-0 pb-[56.25%] overflow-hidden">
                 <img
-                class="absolute top-0 left-0 w-full h-full object-cover rounded border border-gray-200 dark:border-gray-700 hover:scale-105 transition-all"
+                class="absolute top-0 left-0 w-full h-full object-cover rounded-sm border border-gray-200 dark:border-gray-700 hover:scale-105 transition-all"
                 src={img}
                 alt={title}
             />

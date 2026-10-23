@@ -6,25 +6,24 @@ const currentYear = new Date().getFullYear()
 
 
 <footer
+  id="contacto"
   class="opacity-80 m-4 min-[375px]:pl-4 md:pl-0 mt-16 w-full mx-auto container lg:max-w-4xl md:max-w-2xl mb-10 flex justify-center"
 >
   <div
-    class="rounded-lg w-full max-w-screen-xl mx-auto md:flex md:items-center md:justify-between py-4"
+    class="rounded-lg w-full max-w-(--breakpoint-xl) mx-auto md:flex md:items-center md:justify-between py-4"
   >
     <span class="text-sm sm:text-center text-zinc-800/90 dark:text-zinc-200/90"
-      >© {currentYear}
-      <a href="https://linkedin.com/in/danielponsg" class="hover:underline">Daniel. Derechos Reservados</a>.
+      >© {currentYear}{" "}
+      <a href="https://linkedin.com/in/danielponsg" class="hover:underline">Daniel Pons González</a>
     </span>
     <ul
       class="flex flex-wrap items-center mt-3 text-sm font-medium dark:text-white/90 sm:mt-0"
     >
       <li>
-        <a href="/#sobre-mi" class="me-4 md:me-6">Sobre mí</a>
+        <a href="#inicio" class="me-4 md:me-6">Inicio</a>
       </li>
       <li>
-        <a id="contacto" href="mailto:danielpons44@gmail.com" 
-          >Contacto</a
-        >
+        <a href="mailto:danielpons44@gmail.com">Contacto</a>
       </li>
     </ul>
   </div>
