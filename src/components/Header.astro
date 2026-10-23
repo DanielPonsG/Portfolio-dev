@@ -1,17 +1,22 @@
-<header class="flex fixed justify-center items-center py-5 w-full xl:w-[1265px] mx-auto left-auto rounded-sm z-10 backdrop-blur-sm">
+---
+const links = [
+    { href: "#inicio", label: "Inicio" },
+    { href: "#experiencia", label: "Experiencia" },
+    { href: "#proyectos", label: "Proyectos" },
+    { href: "#contacto", label: "Contacto" },
+];
+---
 
-    <nav class="flex flex-row gap-x-10 opacity-80">
-        <a class="nav-link" href="#top">Inicio</a>
-        <a class="nav-link" href="#experiencia">Experiencia</a>
-        <a class="nav-link" href="#proyectos">Proyectos</a>
-        <a class="nav-link" href="#contacto">Contacto</a>
+<header class="flex fixed justify-center items-center py-5 w-full xl:w-[1265px] mx-auto left-auto rounded-xs z-10 backdrop-blur-xs">
+
+    <nav class="flex flex-row gap-x-6 md:gap-x-10 opacity-80 text-sm md:text-base">
+        {
+            links.map(({ href, label }) => (
+                <a class="transition-all hover:scale-110 hover:text-blue-500" href={href}>
+                    {label}
+                </a>
+            ))
+        }
     </nav>
-    
+
 </header>
-
-<style>
-    .nav-link {
-        @apply hover:transition-all hover:scale-110 hover:text-blue-500 transition-all;
-    }
-</style>
-

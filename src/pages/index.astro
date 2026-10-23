@@ -10,25 +10,23 @@ import Section from "../components/Section.astro";
 import Suitcase from "../icons/Suitcase.astro";
 import Code from "../icons/Code.astro";
 import Projects from "../components/Projects.astro";
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import { withBase } from "../utils/url";
 ---
 
 <Layout
-	title="Portfolio Daniel Pons Analista Programador"
-	description="Daniel Pons Analista Programador"
+	title="Daniel Pons · Ingeniero Informático | Automatización y Data Engineering"
+	description="Portfolio de Daniel Pons, Ingeniero Informático especializado en automatización de procesos, integraciones con APIs y pipelines de datos con Python."
 >
 	<main class="px-4">
 		
 		<Section class="py-44 pb-32" id="inicio">
 			<img
 				class="rounded-full size-12 mb-4 object-cover "
-				src="/public/projects/icons8-persona-64.png"
-				alt="Foto"
+				src={withBase("/projects/icons8-persona-64.png")}
+				alt="Daniel Pons"
 			/>
 			<h1
-				class="text-3xl md:text-4xl lg:text-5xl font-semibold flex flex-row gap-x-4 pb-6 lg:pb-10 text-blue-950"
+				class="text-3xl md:text-4xl lg:text-5xl font-semibold flex flex-row flex-wrap gap-4 pb-6 lg:pb-10 text-blue-950"
 			>
 				Daniel Pons<a
 					href="https://linkedin.com/in/danielponsg"
@@ -41,10 +39,10 @@ import Projects from "../components/Projects.astro";
 			<h2
 				class="text-xl text-pretty max-w-[700px] text-blue-950"
 			>
-				Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui
-				laborum quas laudantium? Neque rem beatae repellendus molestiae.
-				Recusandae ipsa, inventore voluptatum voluptatibus similique
-				dignissimos non quidem. Officia ab maiores corporis.
+				Ingeniero Informático enfocado en automatización, integraciones y
+				Data Engineering. Diseño soluciones end-to-end con Python y Pandas,
+				integro APIs empresariales y automatizo el ciclo de desarrollo con
+				GitHub Actions.
 			</h2>
 
 			<nav class="flex gap-4 mt-8 flex-wrap">

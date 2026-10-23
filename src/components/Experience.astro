@@ -2,14 +2,14 @@
 export interface Props {
     title: string;
     date: string;
-    description: string;
+    description: string | string[];
     link?: string;
 }
 const { title, date, link, description } = Astro.props;
 ---
 
 <span
-    class="absolute flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full -start-3 ring-8 ring-blue-100 dark:ring-gray-900 dark:bg-blue-900"
+    class="absolute flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full -inset-s-3 ring-8 ring-blue-100 dark:ring-gray-900 dark:bg-blue-900"
 >
     <svg
         class="w-2.5 h-2.5 text-blue-800 dark:text-blue-300"
@@ -32,17 +32,25 @@ const { title, date, link, description } = Astro.props;
     class="block mb-2 text-sm font-normal leading-none text-blue-700"
     >{date}</time
 >
-<p class="mb-4 text-base font-normal text-justify text-blue-950">
-    {description}
-</p>
+{
+    Array.isArray(description) ? (
+        <ul class="mb-4 list-disc space-y-1 ps-5 text-base font-normal text-blue-950">
+            {description.map((linea) => <li>{linea}</li>)}
+        </ul>
+    ) : (
+        <p class="mb-4 text-base font-normal text-blue-950">{description}</p>
+    )
+}
 
 
 <!-- SI HAY UN LINK, MOSTRAR BOTÓN DE ACCEDER -->
 {
     link && (
         <a
-            href="{link}"
-            class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-100 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-hidden focus:ring-gray-100 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700"
         >
             <svg
                 class="w-3.5 h-3.5 me-2.5"
