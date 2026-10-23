@@ -63,3 +63,19 @@ jobs:
       - name: Publicar
         id: deployment
         uses: actions/deploy-pages@v4
+
+      # El CDN de Pages puede tardar unos segundos en servir la nueva versión.
+      - name: Verificar sitio publicado
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          for intento in 1 2 3 4 5 6; do
+            if curl -fsSL "$PAGE_URL" | grep -q "Daniel Pons" && curl -fsSL -o /dev/null "${PAGE_URL%/}/favicon.svg"; then
+              echo "Sitio publicado y respondiendo: $PAGE_URL"
+              exit 0
+            fi
+            echo "Intento $intento: el sitio todavía no responde, reintento en 10 s"
+            sleep 10
+          done
+          echo "::error::El sitio publicado no respondió con el contenido esperado: $PAGE_URL"
+          exit 1
