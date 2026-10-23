@@ -10,12 +10,24 @@ import Section from "../components/Section.astro";
 import Suitcase from "../icons/Suitcase.astro";
 import Code from "../icons/Code.astro";
 import Projects from "../components/Projects.astro";
+import CaseStudies from "../components/CaseStudies.astro";
+import Stack from "../components/Stack.astro";
+import Education from "../components/Education.astro";
+import Database from "../icons/Database.astro";
+import StackIcon from "../icons/Stack.astro";
+import School from "../icons/School.astro";
 import { withBase } from "../utils/url";
+
+const Destacados = [
+	{ value: "−70%", label: "tiempo de ejecución en un flujo crítico" },
+	{ value: "15+", label: "procesos migrados de RPA a Python y Prefect" },
+	{ value: "8", label: "APIs y servicios empresariales integrados" },
+];
 ---
 
 <Layout
-	title="Daniel Pons · Ingeniero Informático | Automatización y Data Engineering"
-	description="Portfolio de Daniel Pons, Ingeniero Informático especializado en automatización de procesos, integraciones con APIs y pipelines de datos con Python."
+	title="Daniel Pons · Data Engineer | Pipelines, automatización e integraciones"
+	description="Portafolio de Daniel Pons, Ingeniero Informático: pipelines de datos con Python, Pandas y Prefect, integraciones con APIs empresariales y CI/CD con GitHub Actions."
 >
 	<main class="px-4">
 		
@@ -33,17 +45,29 @@ import { withBase } from "../utils/url";
 					target="_blank"
 					class="flex flex-col justify-center hover:scale-105 hover:transition-all transition-all md:hover:scale-105"
 				>
-					<Badge> Disponible para trabajar </Badge></a
+					<Badge> Abierto a desafíos en Data Engineering </Badge></a
 				>
 			</h1>
 			<h2
 				class="text-xl text-pretty max-w-[700px] text-blue-950"
 			>
-				Ingeniero Informático enfocado en automatización, integraciones y
-				Data Engineering. Diseño soluciones end-to-end con Python y Pandas,
-				integro APIs empresariales y automatizo el ciclo de desarrollo con
-				GitHub Actions.
+				Ingeniero Informático enfocado en Data Engineering. Construyo
+				pipelines de datos con Python, Pandas y Prefect, integro APIs
+				empresariales y automatizo su prueba y despliegue con GitHub
+				Actions. También desarrollo sitios y aplicaciones web, como este.
 			</h2>
+
+			<dl class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 max-w-[700px]">
+				{
+					Destacados.map(({ value, label }) => (
+						<div class="p-4 bg-white/70 border border-blue-100 rounded-lg">
+							<dt class="sr-only">{label}</dt>
+							<dd class="text-3xl font-semibold text-blue-800">{value}</dd>
+							<dd class="text-sm text-blue-950">{label}</dd>
+						</div>
+					))
+				}
+			</dl>
 
 			<nav class="flex gap-4 mt-8 flex-wrap">
 				<Social href="https://linkedin.com/in/danielponsg">
@@ -63,20 +87,48 @@ import { withBase } from "../utils/url";
 
 		<Section class="pb-20" id="experiencia">
 			<h2
-				class="text-4xl font-semibold mb-6 flex gap-x-3 items-center text-blue-950"
+				class="text-3xl md:text-4xl font-semibold mb-6 flex gap-x-3 items-center text-blue-950"
 			>
-				<Suitcase class="size-7" />
+				<Suitcase class="size-7 shrink-0" />
 				Experiencia
 			</h2>
 			<TimeLine />
 		</Section>
 
-		<Section id="proyectos">
-			<h2 class="text-4xl font-semibold mb-6 flex gap-x-3 items-center text-blue-950">
-				<Code class="size-7" />
+		<Section class="pb-20" id="casos">
+			<h2 class="text-3xl md:text-4xl font-semibold mb-2 flex gap-x-3 items-center text-blue-950">
+				<Database class="size-7 shrink-0" />
+				Casos de Data Engineering
+			</h2>
+			<p class="mb-6 text-base text-blue-950/80 max-w-[700px]">
+				Procesos que desarrollé en mi trabajo actual en el sector financiero.
+				Omito nombres de clientes, bancos e información interna.
+			</p>
+			<CaseStudies />
+		</Section>
+
+		<Section class="pb-20" id="stack">
+			<h2 class="text-3xl md:text-4xl font-semibold mb-6 flex gap-x-3 items-center text-blue-950">
+				<StackIcon class="size-7 shrink-0" />
+				Stack
+			</h2>
+			<Stack />
+		</Section>
+
+		<Section class="pb-20" id="proyectos">
+			<h2 class="text-3xl md:text-4xl font-semibold mb-6 flex gap-x-3 items-center text-blue-950">
+				<Code class="size-7 shrink-0" />
 				Proyectos
 			</h2>
 			<Projects />
+		</Section>
+
+		<Section id="formacion">
+			<h2 class="text-3xl md:text-4xl font-semibold mb-6 flex gap-x-3 items-center text-blue-950">
+				<School class="size-7 shrink-0" />
+				Formación
+			</h2>
+			<Education />
 		</Section>
 	</main>
 </Layout>

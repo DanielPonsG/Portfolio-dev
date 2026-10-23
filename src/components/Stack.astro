@@ -1,0 +1,56 @@
+---
+const Capas = [
+    {
+        title: "Lenguajes",
+        description: "Base para pipelines, scripts y servicios.",
+        items: ["Python", "SQL", "JavaScript", "TypeScript", "PHP"],
+    },
+    {
+        title: "Procesamiento de datos",
+        description: "Extracción, limpieza, validación y carga.",
+        items: ["Pandas", "ETL", "Conciliación de datos", "Excel y CSV", "Archivos de ancho fijo"],
+    },
+    {
+        title: "Orquestación y automatización",
+        description: "Ejecución programada o bajo demanda, con reintentos y trazabilidad.",
+        items: ["Prefect", "GitHub Actions", "Rocketbot (Xperience y Orchestrator)", "Webhooks"],
+    },
+    {
+        title: "Integraciones",
+        description: "APIs empresariales y servicios de terceros.",
+        items: ["APIs REST", "GraphQL", "Addepar", "Salesforce", "Monday", "Microsoft Graph y SharePoint", "SendGrid", "Bloomberg"],
+    },
+    {
+        title: "Bases de datos y analítica",
+        description: "Modelado, consultas y visualización.",
+        items: ["PostgreSQL", "NoSQL", "Power BI", "Hadoop, HDFS y Hive (académico)", "AWS (académico)"],
+    },
+    {
+        title: "Calidad y DevOps",
+        description: "Código probado, revisado y desplegado automáticamente.",
+        items: ["pytest", "ruff", "Git y GitHub", "CI/CD", "Azure Key Vault", "Windows y Linux"],
+    },
+    {
+        title: "Desarrollo web",
+        description: "Interfaces y aplicaciones completas.",
+        items: ["Astro", "Tailwind CSS", "Django", "Bootstrap", "HTML y CSS"],
+    },
+];
+---
+
+<!-- STACK AGRUPADO POR CAPA, DE LOS DATOS A LA WEB -->
+<div class="grid gap-4 md:grid-cols-2">
+    {
+        Capas.map(({ title, description, items }) => (
+            <article class="p-4 bg-white/70 border border-blue-100 rounded-lg shadow-sm">
+                <h3 class="text-lg font-semibold text-blue-800">{title}</h3>
+                <p class="mb-3 text-sm text-blue-950/80">{description}</p>
+                <ul class="flex flex-wrap gap-2">
+                    {items.map((item) => (
+                        <li class="px-2 py-1 text-xs text-blue-900 bg-blue-100 rounded-full">{item}</li>
+                    ))}
+                </ul>
+            </article>
+        ))
+    }
+</div>

@@ -1,0 +1,73 @@
+---
+import Certificate from "../icons/Certificate.astro";
+
+const Titulos = [
+    {
+        title: "Ingeniería Informática",
+        institution: "INACAP",
+        date: "Marzo 2023 - Agosto 2025",
+    },
+    {
+        title: "Analista Programador",
+        institution: "INACAP",
+        date: "Marzo 2020 - Julio 2022",
+    },
+];
+
+const Certificados = [
+    "Arquitectura Cloud",
+    "Diseño y Gestión de Base de Datos",
+    "Desarrollador Full Stack",
+    "Diseño Ágil de Sistemas",
+    "Soporte Computacional",
+];
+
+const Cursos = [
+    "Bases de datos relacionales y no estructuradas",
+    "Big Data",
+    "Minería de datos",
+    "Inteligencia artificial",
+    "Tecnología cloud",
+    "Seguridad de la información",
+    "Ingeniería de software",
+    "Desarrollo front end y back end",
+    "Metodologías ágiles",
+];
+---
+
+<!-- TÍTULOS, CERTIFICADOS Y CURSOS DESTACADOS -->
+<div class="grid gap-6 md:grid-cols-2">
+    <div class="flex flex-col gap-4">
+        {
+            Titulos.map(({ title, institution, date }) => (
+                <article class="p-4 bg-white/70 border border-blue-100 rounded-lg shadow-sm">
+                    <h3 class="text-lg font-semibold text-blue-800">{title}</h3>
+                    <p class="text-base text-blue-950">{institution}</p>
+                    <time class="text-sm text-blue-700">{date}</time>
+                </article>
+            ))
+        }
+
+        <article class="p-4 bg-white/70 border border-blue-100 rounded-lg shadow-sm">
+            <h3 class="mb-3 text-lg font-semibold text-blue-800">Cursos destacados</h3>
+            <ul class="flex flex-wrap gap-2">
+                {Cursos.map((curso) => (
+                    <li class="px-2 py-1 text-xs text-blue-900 bg-blue-100 rounded-full">{curso}</li>
+                ))}
+            </ul>
+        </article>
+    </div>
+
+    <article class="p-4 bg-white/70 border border-blue-100 rounded-lg shadow-sm">
+        <h3 class="text-lg font-semibold text-blue-800">Certificaciones académicas</h3>
+        <p class="mb-3 text-sm text-blue-950/80">INACAP · Diciembre 2024</p>
+        <ul class="space-y-3">
+            {Certificados.map((certificado) => (
+                <li class="flex items-center gap-x-3 text-base text-blue-950">
+                    <Certificate class="size-5 shrink-0 text-blue-700" aria-hidden="true" />
+                    {certificado}
+                </li>
+            ))}
+        </ul>
+    </article>
+</div>
