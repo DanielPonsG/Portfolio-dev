@@ -1,63 +1,102 @@
 ---
 import "@fontsource-variable/onest";
+import "@fontsource-variable/jetbrains-mono";
 import "../styles/global.css";
 
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { withBase } from "../utils/url";
+import type { Idioma } from "../i18n";
+import { ui } from "../i18n/ui";
 
 interface Props {
+	lang: Idioma;
 	title: string;
 	description: string;
+	// Ruta de esta misma página en cada idioma, para el selector y hreflang.
+	alternos: Record<Idioma, string>;
 }
-const { title, description } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+const { lang, title, description, alternos } = Astro.props;
+const t = ui[lang];
+const absoluta = (ruta: string) => new URL(ruta, Astro.site).href;
+const canonical = absoluta(alternos[lang]);
+const ogImagen = absoluta(withBase(`/og/${lang}.png`));
+
+const persona = {
+	"@context": "https://schema.org",
+	"@type": "Person",
+	name: "Daniel Pons González",
+	jobTitle: "Data Engineer",
+	url: absoluta(alternos[lang]),
+	image: absoluta(withBase("/avatar/tecnologo.webp")),
+	email: "mailto:danielpons44@gmail.com",
+	address: { "@type": "PostalAddress", addressLocality: "Santiago", addressCountry: "CL" },
+	alumniOf: { "@type": "CollegeOrUniversity", name: "INACAP" },
+	knowsAbout: ["Data Engineering", "ETL", "Python", "Pandas", "Prefect", "SQL", "GitHub Actions", "Astro"],
+	sameAs: ["https://www.linkedin.com/in/danielponsg", "https://github.com/DanielPonsG"],
+};
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonical} />
+		<link rel="alternate" hreflang="es" href={absoluta(alternos.es)} />
+		<link rel="alternate" hreflang="en" href={absoluta(alternos.en)} />
+		<link rel="alternate" hreflang="x-default" href={absoluta(alternos.es)} />
 		<link rel="icon" type="image/svg+xml" href={withBase("/favicon.svg")} />
+		<link rel="sitemap" href={withBase("/sitemap-index.xml")} />
 		<meta name="generator" content={Astro.generator} />
+		<meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#0a0f1d" media="(prefers-color-scheme: dark)" />
 
 		<meta property="og:type" content="website" />
-		<meta property="og:locale" content="es_CL" />
+		<meta property="og:site_name" content="Daniel Pons" />
+		<meta property="og:locale" content={t.meta.ogLocale} />
+		<meta property="og:locale:alternate" content={ui[lang === "es" ? "en" : "es"].meta.ogLocale} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonical} />
-		<meta property="og:image" content={new URL(withBase("/projects/portfolio.webp"), Astro.site)} />
+		<meta property="og:image" content={ogImagen} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content="summary_large_image" />
 
-		<title>{title}</title>
+		<script type="application/ld+json" set:html={JSON.stringify(persona)} />
+
+		<!-- Aplica el tema antes de pintar para evitar un destello del tema equivocado. -->
+		<script is:inline>
+			(() => {
+				let tema = null;
+				try {
+					tema = localStorage.getItem("tema");
+				} catch {}
+				const oscuro = tema ? tema === "oscuro" : matchMedia("(prefers-color-scheme: dark)").matches;
+				document.documentElement.classList.toggle("dark", oscuro);
+			})();
+		</script>
 	</head>
 
-	<body class="relative text-black" id="top">
+	<body id="arriba" class="relative isolate min-h-screen flex flex-col bg-fondo text-tinta">
+		<a
+			href="#contenido"
+			class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:rounded-lg focus:bg-acento focus:text-acento-tinta"
+		>
+			{t.nav.saltar}
+		</a>
 		<div
-			class="absolute top-0 bottom-0 z-[-2] min-h-screen w-full bg-blue-50
-      bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(217,216,255,0.5),rgba(255,255,255,0.9))]"
+			class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[640px] bg-[radial-gradient(ellipse_70%_60%_at_50%_-10%,var(--acento-suave),transparent)]"
+			aria-hidden="true"
 		>
 		</div>
-		<Header />
-		<slot />
-		<Footer />
-
-		<style is:global>
-			:root {
-				color-scheme: light;
-			}
-			html {
-				font-family: "Onest Variable", system-ui, sans-serif;
-				scroll-behavior: smooth;
-			}
-
-			body {
-				display: flex;
-				flex-direction: column;
-				min-height: 100vh;
-			}
-		</style>
+		<Header lang={lang} alternos={alternos} />
+		<main id="contenido" class="flex-1">
+			<slot />
+		</main>
+		<Footer lang={lang} />
 	</body>
 </html>

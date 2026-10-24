@@ -1,99 +1,55 @@
 ---
 import Flow from "./Flow.astro";
-import datos from "../data/indicadores.json";
+import ArrowUpRight from "../icons/ArrowUpRight.astro";
+import { localeDe, type Idioma } from "../i18n";
+import { ui } from "../i18n/ui";
+import { formatos, nombre, resumen, sparkline } from "../utils/indicadores";
 
-// El pipeline de /pipeline escribe este JSON en cada ejecución.
-interface Indicador {
-    codigo: string;
-    nombre: string;
-    unidad: string;
-    decimales: number;
-    ultimo: { fecha: string; valor: number };
-    variacion: number | null;
-    serie: [string, number][];
+interface Props {
+    lang: Idioma;
 }
-
-const indicadores = datos.indicadores as Indicador[];
+const { lang } = Astro.props;
+const t = ui[lang].pipeline;
+const f = formatos(lang);
+const { indicadores, dias_variacion: dias } = resumen;
 const REPO = "https://github.com/DanielPonsG/Portfolio-dev";
 
-const pasos = [
-    "API pública",
-    "Extracción con reintentos",
-    "Validación con Pandas",
-    "Histórico en Git",
-    "Build con Astro",
-    "GitHub Pages",
-];
-
-const moneda = (valor: number, unidad: string, decimales: number) =>
-    new Intl.NumberFormat("es-CL", {
-        style: "currency",
-        currency: unidad,
-        minimumFractionDigits: decimales,
-        maximumFractionDigits: decimales,
-    }).format(valor);
-
-const dia = (iso: string) =>
-    new Intl.DateTimeFormat("es-CL", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(
-        new Date(`${iso}T00:00:00Z`),
-    );
-
-const porcentaje = new Intl.NumberFormat("es-CL", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
 const variacion = (valor: number | null) => {
-    if (valor === null) return "Sin datos para comparar";
-    if (valor === 0) return `Sin cambio en ${datos.dias_variacion} días`;
-    const flecha = valor > 0 ? "▲" : "▼";
-    return `${flecha} ${porcentaje.format(Math.abs(valor))} % en ${datos.dias_variacion} días`;
+    if (valor === null) return t.sinComparar;
+    if (valor === 0) return t.sinCambio(dias);
+    return `${valor > 0 ? "▲" : "▼"} ${f.porcentaje(Math.abs(valor))} ${t.enDias(dias)}`;
 };
-
-const generado = datos.generado
-    ? new Intl.DateTimeFormat("es-CL", {
-          dateStyle: "long",
-          timeStyle: "short",
-          timeZone: "America/Santiago",
-      }).format(new Date(datos.generado))
-    : null;
 
 // Geometría de las sparklines, en unidades del viewBox.
 const ANCHO = 300;
 const ALTO = 72;
-const MARGEN = 6;
 
-function grafico(serie: [string, number][]) {
-    const valores = serie.map(([, valor]) => valor);
-    const minimo = Math.min(...valores);
-    const maximo = Math.max(...valores);
-    const rango = maximo - minimo || 1;
-    const paso = (ANCHO - 2 * MARGEN) / Math.max(serie.length - 1, 1);
-    const puntos = valores.map((valor, i) => [
-        +(MARGEN + i * paso).toFixed(1),
-        +(MARGEN + ((maximo - valor) / rango) * (ALTO - 2 * MARGEN)).toFixed(1),
-    ]);
-    const linea = puntos.map(([x, y], i) => `${i ? "L" : "M"}${x},${y}`).join("");
-    const [primero] = puntos;
-    const ultimo = puntos[puntos.length - 1];
-    const area = `${linea}L${ultimo[0]},${ALTO}L${primero[0]},${ALTO}Z`;
-    return { puntos, linea, area, ultimo, minimo, maximo };
-}
+const enlaces = [
+    { href: `${REPO}/tree/main/pipeline`, texto: t.codigo },
+    { href: `${REPO}/actions/workflows/pipeline.yml`, texto: t.ejecuciones },
+    { href: `${REPO}/blob/main/data/indicadores.csv`, texto: t.csv },
+];
 ---
 
 <!-- PIPELINE EN VIVO: RESULTADO DE LA ÚLTIMA EJECUCIÓN DEL ETL -->
-<div class="p-5 bg-white rounded-lg shadow-md">
-    <Flow pasos={pasos} />
+<div class="p-5 border sm:p-6 rounded-2xl border-borde bg-superficie">
+    <Flow pasos={t.pasos} etiqueta={ui[lang].caso.flujo} />
 
-    <p class="flex items-start gap-x-2 text-sm text-blue-950">
+    <p class="flex items-start mt-4 text-sm gap-x-2 text-tinta-2">
         {
-            generado ? (
+            resumen.generado ? (
                 <>
-                    <span class="size-2 mt-1.5 shrink-0 rounded-full bg-emerald-500" aria-hidden="true" />
+                    <span class="relative flex size-2 mt-1.5 shrink-0" aria-hidden="true">
+                        <span class="absolute inline-flex w-full h-full rounded-full opacity-75 motion-safe:animate-ping bg-vivo" />
+                        <span class="relative inline-flex rounded-full size-2 bg-vivo" />
+                    </span>
                     <span>
-                        Última ejecución: <strong class="font-semibold">{generado}</strong> (hora de Chile) ·{" "}
-                        {datos.registros.toLocaleString("es-CL")} registros en el histórico
+                        {t.ultimaEjecucion}: <strong class="font-semibold text-tinta">{f.fechaHora(resumen.generado)}</strong>{" "}
+                        {`(${t.horaChile}) · ${f.entero(resumen.registros)} ${t.registros}`}
                     </span>
                 </>
             ) : (
-                <span>La primera ejecución del pipeline publicará aquí sus resultados.</span>
+                <span>{t.pendiente}</span>
             )
         }
     </p>
@@ -102,32 +58,36 @@ function grafico(serie: [string, number][]) {
         indicadores.length > 0 && (
             <div class="grid gap-4 mt-5 sm:grid-cols-2">
                 {indicadores.map((indicador) => {
-                    const { puntos, linea, area, ultimo, minimo, maximo } = grafico(indicador.serie);
-                    const valor = (v: number) => moneda(v, indicador.unidad, indicador.decimales);
+                    const { puntos, linea, area, ultimo, minimo, maximo } = sparkline(indicador.serie, ANCHO, ALTO);
+                    const valor = (v: number) => f.moneda(v, indicador.unidad, indicador.decimales);
+                    const titulo = nombre(indicador, lang);
                     return (
                         <article
-                            class="p-4 border border-blue-100 rounded-lg bg-blue-50/40"
+                            class="p-4 border rounded-xl border-borde bg-superficie-2/60"
                             data-sparkline
                             data-puntos={JSON.stringify(puntos)}
                             data-serie={JSON.stringify(indicador.serie)}
                             data-unidad={indicador.unidad}
                             data-decimales={indicador.decimales}
+                            data-locale={localeDe[lang]}
                         >
-                            <h3 class="text-sm font-medium text-blue-950/80">{indicador.nombre}</h3>
-                            <p class="text-2xl font-semibold text-blue-950">{valor(indicador.ultimo.valor)}</p>
-                            <p class="text-sm text-blue-950/80">{variacion(indicador.variacion)}</p>
+                            <h3 class="text-sm font-medium text-tinta-2">{titulo}</h3>
+                            <p class="text-2xl font-semibold tracking-tight tabular-nums text-tinta">
+                                {valor(indicador.ultimo.valor)}
+                            </p>
+                            <p class="text-sm tabular-nums text-tinta-2">{variacion(indicador.variacion)}</p>
                             <svg
-                                class="block w-full h-auto mt-3 overflow-visible cursor-crosshair rounded-sm focus:outline-2 focus:outline-offset-4 focus:outline-blue-500"
+                                class="block w-full h-auto mt-3 overflow-visible rounded-sm cursor-crosshair"
                                 viewBox={`0 0 ${ANCHO} ${ALTO}`}
                                 role="img"
                                 tabindex="0"
-                                aria-label={`${indicador.nombre} en los últimos 12 meses: mínimo ${valor(minimo)}, máximo ${valor(maximo)}. Use las flechas para recorrer los valores.`}
+                                aria-label={t.graficoAria(titulo, valor(minimo), valor(maximo))}
                             >
-                                <path d={area} fill="#1d4ed8" fill-opacity="0.1" />
+                                <path d={area} class="fill-acento/10" />
                                 <path
                                     d={linea}
                                     fill="none"
-                                    stroke="#1d4ed8"
+                                    class="stroke-acento"
                                     stroke-width="2"
                                     stroke-linejoin="round"
                                     stroke-linecap="round"
@@ -137,16 +97,16 @@ function grafico(serie: [string, number][]) {
                                     data-guia
                                     y1="0"
                                     y2={ALTO}
-                                    stroke="#94a3b8"
+                                    class="stroke-tinta-2/60"
                                     stroke-width="1"
                                     vector-effect="non-scaling-stroke"
                                     visibility="hidden"
                                 />
-                                <circle cx={ultimo[0]} cy={ultimo[1]} r="4" fill="#1d4ed8" stroke="#fff" stroke-width="2" />
-                                <circle data-marca r="4" fill="#1d4ed8" stroke="#fff" stroke-width="2" visibility="hidden" />
+                                <circle cx={ultimo[0]} cy={ultimo[1]} r="4" class="fill-acento stroke-superficie" stroke-width="2" />
+                                <circle data-marca r="4" class="fill-acento stroke-superficie" stroke-width="2" visibility="hidden" />
                             </svg>
-                            <p class="mt-1 text-xs text-blue-950/70" data-lectura aria-live="polite">
-                                Al {dia(indicador.ultimo.fecha)} · últimos 12 meses
+                            <p class="mt-1 text-xs text-tinta-2" data-lectura aria-live="polite">
+                                {t.al} {f.dia(indicador.ultimo.fecha)} · {t.ultimos12}
                             </p>
                         </article>
                     );
@@ -157,28 +117,30 @@ function grafico(serie: [string, number][]) {
 
     {
         indicadores.length > 0 && (
-            <details class="mt-4 text-sm text-blue-950">
-                <summary class="cursor-pointer font-medium text-blue-800">Ver los datos en una tabla</summary>
+            <details class="mt-4 text-sm text-tinta">
+                <summary class="font-medium cursor-pointer text-acento">{t.tabla}</summary>
                 <div class="mt-2 overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead class="text-blue-950/70">
+                    <table class="w-full text-left tabular-nums">
+                        <thead class="text-tinta-2">
                             <tr>
-                                <th class="py-1 pe-4 font-medium">Indicador</th>
-                                <th class="py-1 pe-4 font-medium">Fecha</th>
-                                <th class="py-1 pe-4 font-medium text-right">Último valor</th>
-                                <th class="py-1 font-medium text-right">Variación {datos.dias_variacion} días</th>
+                                <th class="py-1 font-medium pe-4">{t.columnas[0]}</th>
+                                <th class="py-1 font-medium pe-4">{t.columnas[1]}</th>
+                                <th class="py-1 font-medium text-right pe-4">{t.columnas[2]}</th>
+                                <th class="py-1 font-medium text-right">
+                                    {t.columnas[3]} ({t.enDias(dias)})
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {indicadores.map((indicador) => (
-                                <tr class="border-t border-blue-100">
-                                    <td class="py-1 pe-4">{indicador.nombre}</td>
-                                    <td class="py-1 pe-4 whitespace-nowrap">{dia(indicador.ultimo.fecha)}</td>
-                                    <td class="py-1 pe-4 text-right whitespace-nowrap">
-                                        {moneda(indicador.ultimo.valor, indicador.unidad, indicador.decimales)}
+                                <tr class="border-t border-borde">
+                                    <td class="py-1 pe-4">{nombre(indicador, lang)}</td>
+                                    <td class="py-1 pe-4 whitespace-nowrap">{f.dia(indicador.ultimo.fecha)}</td>
+                                    <td class="py-1 text-right pe-4 whitespace-nowrap">
+                                        {f.moneda(indicador.ultimo.valor, indicador.unidad, indicador.decimales)}
                                     </td>
                                     <td class="py-1 text-right whitespace-nowrap">
-                                        {indicador.variacion === null ? "–" : `${porcentaje.format(indicador.variacion)} %`}
+                                        {indicador.variacion === null ? "–" : f.porcentaje(indicador.variacion)}
                                     </td>
                                 </tr>
                             ))}
@@ -189,11 +151,20 @@ function grafico(serie: [string, number][]) {
         )
     }
 
-    <ul class="flex flex-wrap gap-x-5 gap-y-2 mt-4 text-sm font-medium text-blue-800">
-        <li><a class="hover:underline" href={`${REPO}/tree/main/pipeline`} target="_blank" rel="noopener noreferrer">Código del pipeline</a></li>
-        <li><a class="hover:underline" href={`${REPO}/actions/workflows/pipeline.yml`} target="_blank" rel="noopener noreferrer">Historial de ejecuciones</a></li>
-        <li><a class="hover:underline" href={`${REPO}/blob/main/data/indicadores.csv`} target="_blank" rel="noopener noreferrer">Histórico en CSV</a></li>
-        <li>Fuente: <a class="hover:underline" href="https://mindicador.cl" target="_blank" rel="noopener noreferrer">mindicador.cl</a></li>
+    <ul class="flex flex-wrap mt-5 text-sm font-medium gap-x-5 gap-y-2">
+        {
+            enlaces.map(({ href, texto }) => (
+                <li>
+                    <a class="inline-flex items-center gap-x-1 text-acento hover:underline" href={href} target="_blank" rel="noopener noreferrer">
+                        {texto}
+                        <ArrowUpRight class="size-3.5" aria-hidden="true" />
+                    </a>
+                </li>
+            ))
+        }
+        <li class="text-tinta-2">
+            {t.fuente}: <a class="text-acento hover:underline" href="https://mindicador.cl" target="_blank" rel="noopener noreferrer">mindicador.cl</a>
+        </li>
     </ul>
 </div>
 
@@ -208,13 +179,14 @@ function grafico(serie: [string, number][]) {
         const puntos: [number, number][] = JSON.parse(tarjeta.dataset.puntos!);
         const serie: [string, number][] = JSON.parse(tarjeta.dataset.serie!);
         const decimales = Number(tarjeta.dataset.decimales);
-        const moneda = new Intl.NumberFormat("es-CL", {
+        const locale = tarjeta.dataset.locale;
+        const moneda = new Intl.NumberFormat(locale, {
             style: "currency",
             currency: tarjeta.dataset.unidad,
             minimumFractionDigits: decimales,
             maximumFractionDigits: decimales,
         });
-        const dia = new Intl.DateTimeFormat("es-CL", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+        const dia = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
         const textoOriginal = lectura.textContent;
         let actual = puntos.length - 1;
 

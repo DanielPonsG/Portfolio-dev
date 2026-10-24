@@ -1,26 +1,130 @@
 ---
-// En pantallas pequeñas solo caben algunos enlaces; el resto se muestra desde sm.
-const links = [
-    { href: "#experiencia", label: "Experiencia", mobile: true },
-    { href: "#casos", label: "Casos", mobile: true },
-    { href: "#pipeline", label: "Pipeline", mobile: false },
-    { href: "#stack", label: "Stack", mobile: false },
-    { href: "#proyectos", label: "Proyectos", mobile: true },
-    { href: "#formacion", label: "Formación", mobile: false },
-    { href: "#contacto", label: "Contacto", mobile: true },
-];
+import Sun from "../icons/Sun.astro";
+import Moon from "../icons/Moon.astro";
+import Menu from "../icons/Menu.astro";
+import Close from "../icons/Close.astro";
+import Language from "../icons/Language.astro";
+import { rutas, seccion, type Idioma } from "../i18n";
+import { ui } from "../i18n/ui";
+
+interface Props {
+    lang: Idioma;
+    alternos: Record<Idioma, string>;
+}
+const { lang, alternos } = Astro.props;
+const t = ui[lang];
+const otro: Idioma = lang === "es" ? "en" : "es";
+
+const enlaces = (["casos", "pipeline", "experiencia", "stack", "proyectos", "formacion", "contacto"] as const).map(
+    (id) => ({ href: seccion(lang, id), label: t.nav[id] }),
+);
+const control =
+    "inline-flex items-center justify-center gap-x-1.5 h-9 min-w-9 px-2 rounded-lg border border-borde bg-superficie text-tinta-2 hover:text-tinta hover:border-acento transition-colors";
 ---
 
-<header class="flex fixed justify-center items-center py-5 w-full xl:w-[1265px] mx-auto left-auto rounded-xs z-10 backdrop-blur-xs">
+<header class="sticky top-0 z-40 border-b border-borde/70 bg-fondo/80 backdrop-blur-md">
+    <div class="flex items-center justify-between h-16 max-w-5xl gap-4 px-4 mx-auto sm:px-6">
+        <a href={rutas.inicio(lang)} class="flex items-center font-semibold gap-x-2 text-tinta">
+            <span class="grid font-mono text-xs rounded-md size-8 place-items-center bg-acento text-acento-tinta">DP</span>
+            <span>Daniel Pons</span>
+        </a>
 
-    <nav class="flex flex-row gap-x-5 md:gap-x-8 opacity-80 text-sm md:text-base">
-        {
-            links.map(({ href, label, mobile }) => (
-                <a class={`transition-all hover:scale-110 hover:text-blue-500 ${mobile ? "" : "hidden sm:inline"}`} href={href}>
-                    {label}
-                </a>
-            ))
-        }
+        <nav aria-label={t.nav.principal} class="hidden lg:block">
+            <ul class="flex text-sm gap-x-5">
+                {enlaces.map(({ href, label }) => (
+                    <li><a class="transition-colors text-tinta-2 hover:text-acento" href={href}>{label}</a></li>
+                ))}
+            </ul>
+        </nav>
+
+        <div class="flex items-center gap-x-2">
+            <a class={control} href={alternos[otro]} hreflang={otro} lang={otro} aria-label={t.idioma.cambiar}>
+                <Language class="size-4" aria-hidden="true" />
+                <span class="font-mono text-xs font-semibold">{t.idioma.corto}</span>
+            </a>
+            <button
+                type="button"
+                class={control}
+                data-tema-boton
+                data-etiqueta-claro={t.tema.claro}
+                data-etiqueta-oscuro={t.tema.oscuro}
+                aria-label={t.tema.oscuro}
+            >
+                <Moon class="size-4 dark:hidden" aria-hidden="true" />
+                <Sun class="hidden size-4 dark:block" aria-hidden="true" />
+            </button>
+            <button
+                type="button"
+                class={`${control} lg:hidden`}
+                data-menu-boton
+                aria-controls="menu-movil"
+                aria-expanded="false"
+                aria-label={t.nav.menu}
+                data-etiqueta-abrir={t.nav.menu}
+                data-etiqueta-cerrar={t.nav.cerrar}
+            >
+                <Menu class="size-4" data-icono-abrir aria-hidden="true" />
+                <Close class="hidden size-4" data-icono-cerrar aria-hidden="true" />
+            </button>
+        </div>
+    </div>
+
+    <nav id="menu-movil" aria-label={t.nav.principal} class="hidden border-t lg:hidden border-borde bg-fondo">
+        <ul class="flex flex-col max-w-5xl px-4 py-2 mx-auto sm:px-6">
+            {enlaces.map(({ href, label }) => (
+                <li>
+                    <a class="block py-3 border-b text-tinta border-borde/60 last:border-0 hover:text-acento" href={href}>{label}</a>
+                </li>
+            ))}
+        </ul>
     </nav>
-
 </header>
+
+<script>
+    // Tema: alterna la clase .dark y recuerda la elección del visitante.
+    const botonTema = document.querySelector<HTMLButtonElement>("[data-tema-boton]")!;
+    const raiz = document.documentElement;
+    const actualizarEtiqueta = () => {
+        const oscuro = raiz.classList.contains("dark");
+        botonTema.setAttribute("aria-label", oscuro ? botonTema.dataset.etiquetaClaro! : botonTema.dataset.etiquetaOscuro!);
+    };
+    actualizarEtiqueta();
+    botonTema.addEventListener("click", () => {
+        const oscuro = raiz.classList.toggle("dark");
+        try {
+            localStorage.setItem("tema", oscuro ? "oscuro" : "claro");
+        } catch {}
+        actualizarEtiqueta();
+    });
+    // Sin una elección guardada, el sitio sigue al tema del sistema.
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (evento) => {
+        let guardado = null;
+        try {
+            guardado = localStorage.getItem("tema");
+        } catch {}
+        if (guardado) return;
+        raiz.classList.toggle("dark", evento.matches);
+        actualizarEtiqueta();
+    });
+
+    // Menú móvil.
+    const botonMenu = document.querySelector<HTMLButtonElement>("[data-menu-boton]")!;
+    const menu = document.getElementById("menu-movil")!;
+    const abrirMenu = (abierto: boolean) => {
+        menu.classList.toggle("hidden", !abierto);
+        botonMenu.setAttribute("aria-expanded", String(abierto));
+        botonMenu.setAttribute("aria-label", abierto ? botonMenu.dataset.etiquetaCerrar! : botonMenu.dataset.etiquetaAbrir!);
+        botonMenu.querySelector("[data-icono-abrir]")!.classList.toggle("hidden", abierto);
+        botonMenu.querySelector("[data-icono-cerrar]")!.classList.toggle("hidden", !abierto);
+    };
+    botonMenu.addEventListener("click", () => abrirMenu(menu.classList.contains("hidden")));
+    menu.addEventListener("click", (evento) => {
+        if ((evento.target as HTMLElement).closest("a")) abrirMenu(false);
+    });
+    document.addEventListener("keydown", (evento) => {
+        if (evento.key === "Escape" && !menu.classList.contains("hidden")) {
+            abrirMenu(false);
+            botonMenu.focus();
+        }
+    });
+</script>

@@ -1,0 +1,56 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Hero from "../Hero.astro";
+import Section from "../Section.astro";
+import CaseGrid from "../CaseGrid.astro";
+import LivePipeline from "../LivePipeline.astro";
+import Experience from "../Experience.astro";
+import Stack from "../Stack.astro";
+import Projects from "../Projects.astro";
+import Education from "../Education.astro";
+import Contact from "../Contact.astro";
+import { rutas, type Idioma } from "../../i18n";
+import { ui } from "../../i18n/ui";
+
+interface Props {
+    lang: Idioma;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+const s = t.secciones;
+---
+
+<!-- PÁGINA DE INICIO, COMPARTIDA POR LAS VERSIONES EN ESPAÑOL E INGLÉS -->
+<Layout lang={lang} title={t.meta.titulo} description={t.meta.descripcion} alternos={{ es: rutas.inicio("es"), en: rutas.inicio("en") }}>
+    <Hero lang={lang} />
+
+    <Section id="casos" numero="01" titulo={s.casos.titulo} intro={s.casos.intro} class="pb-24">
+        <CaseGrid lang={lang} />
+    </Section>
+
+    <div class="py-20 mb-24 border-y border-borde bg-superficie-2/70">
+        <Section id="pipeline" numero="02" titulo={s.pipeline.titulo} intro={s.pipeline.intro}>
+            <LivePipeline lang={lang} />
+        </Section>
+    </div>
+
+    <Section id="experiencia" numero="03" titulo={s.experiencia.titulo} class="pb-24">
+        <Experience lang={lang} />
+    </Section>
+
+    <Section id="stack" numero="04" titulo={s.stack.titulo} class="pb-24">
+        <Stack lang={lang} />
+    </Section>
+
+    <Section id="proyectos" numero="05" titulo={s.proyectos.titulo} class="pb-24">
+        <Projects lang={lang} />
+    </Section>
+
+    <Section id="formacion" numero="06" titulo={s.formacion.titulo} class="pb-24">
+        <Education lang={lang} />
+    </Section>
+
+    <Section id="contacto">
+        <Contact lang={lang} />
+    </Section>
+</Layout>

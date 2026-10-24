@@ -1,112 +1,55 @@
 ---
-import HTML from "../icons/HTML.astro";
-import CSS from "../icons/CSS.astro";
+import ArrowUpRight from "../icons/ArrowUpRight.astro";
+import School from "../icons/School.astro";
+import type { Idioma } from "../i18n";
+import { ui } from "../i18n/ui";
+import { proyectos } from "../data/perfil";
 import { withBase } from "../utils/url";
 
-interface Tag {
-    name: string;
-    class: string;
-    icon?: typeof HTML;
+interface Props {
+    lang: Idioma;
 }
-
-const Tags: Record<string, Tag> = {
-    Html: {
-        name: "HTML",
-        class: "bg-black text-white",
-        icon: HTML,
-    },
-    Css: {
-        name: "CSS",
-        class: "bg-blue-500 text-white",
-        icon: CSS,
-    },
-    Astro: {
-        name: "Astro",
-        class: "bg-orange-600 text-white",
-    },
-    Tailwind: {
-        name: "Tailwind CSS",
-        class: "bg-sky-600 text-white",
-    },
-    Actions: {
-        name: "GitHub Actions",
-        class: "bg-gray-800 text-white",
-    },
-    Python: {
-        name: "Python",
-        class: "bg-yellow-400 text-blue-950",
-    },
-    Django: {
-        name: "Django",
-        class: "bg-green-800 text-white",
-    },
-    Postgres: {
-        name: "PostgreSQL (Supabase)",
-        class: "bg-emerald-600 text-white",
-    },
-    Vercel: {
-        name: "Vercel",
-        class: "bg-black text-white",
-    },
-};
-
-interface Proyecto {
-    title: string;
-    description: string;
-    img?: string;
-    link?: string;
-    tags: Tag[];
-}
-
-const Proyectos: Proyecto[] = [
-    {
-        title: "Sitio web personal con Astro y Tailwind CSS",
-        description: "Este mismo sitio: estático, responsive y con integración y despliegue continuo en GitHub Pages mediante GitHub Actions (chequeo de tipos, build y verificación de enlaces en cada cambio).",
-        img: withBase("/projects/portfolio.webp"),
-        link: "https://github.com/DanielPonsG/Portfolio-dev",
-        tags: [Tags.Astro, Tags.Tailwind, Tags.Actions],
-    },
-    {
-        title: "SAM · Sistema de gestión académica",
-        description: "Aplicación web full stack para colegios: estudiantes, profesores, asignaturas, notas, asistencia, calendario y libro de anotaciones, con permisos por rol (dirección, profesores y apoderados). Base de datos PostgreSQL en Supabase y despliegue en Vercel. Repositorio privado.",
-        tags: [Tags.Python, Tags.Django, Tags.Postgres, Tags.Vercel],
-    },
-];
+const { lang } = Astro.props;
+const t = ui[lang].secciones.proyectos;
 ---
 
-<div class="flex flex-col gap-6">
-{
-    Proyectos.map(({title, description, img, link, tags}) => (
-        <article class="max-w-full overflow-hidden p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
-            <h3 class="text-lg font-semibold text-blue-800 mb-2">
-                {link ? (
-                    <a href={link} target="_blank" rel="noopener noreferrer" class="hover:underline">
-                        {title}
-                    </a>
-                ) : title}
-            </h3>
-            <p class="mb-4 text-base font-normal text-blue-950">{description}</p>
-            <ul class="flex flex-wrap gap-2 flex-row mb-2">
-                {tags.map(({ name, class: className, icon: Icon }) => (
-                    <li>
-                        <span class={`flex gap-x-2 rounded-full text-xs ${className} py-1 px-2`}>
-                            {Icon && <Icon class="size-4"/>}
-                            {name}
-                        </span>
-                    </li>
-                ))}
-            </ul>
-            {img && (
-                <div class="relative w-full h-0 pb-[56.25%] overflow-hidden">
-                    <img
-                        class="absolute top-0 left-0 w-full h-full object-cover rounded-sm border border-gray-200 dark:border-gray-700 hover:scale-105 transition-all"
-                        src={img}
-                        alt={title}
-                        loading="lazy"
-                    />
+<!-- PROYECTOS PERSONALES Y ACADÉMICOS -->
+<ul class="grid gap-4 md:grid-cols-2">
+    {
+        proyectos[lang].map(({ titulo, descripcion, imagen, enlace, tags }) => (
+            <li class="flex flex-col overflow-hidden border rounded-2xl border-borde bg-superficie">
+                <div class="overflow-hidden border-b aspect-video border-borde bg-superficie-2">
+                    {imagen ? (
+                        <img class="object-cover object-top w-full h-full" src={withBase(imagen)} alt="" loading="lazy" width="1280" height="720" />
+                    ) : (
+                        <div class="relative grid w-full h-full place-items-center bg-[radial-gradient(ellipse_at_center,var(--acento-suave),transparent_70%)]">
+                            <span class="grid rounded-2xl size-16 place-items-center bg-superficie text-acento ring-1 ring-borde">
+                                <School class="size-8" aria-hidden="true" />
+                            </span>
+                            <span class="absolute font-mono text-xs bottom-4 text-tinta-2">{tags.slice(0, 3).join(" · ")}</span>
+                        </div>
+                    )}
                 </div>
-            )}
-        </article>
-    ))
-}
-</div>
+                <div class="flex flex-col flex-1 p-6">
+                    <h3 class="text-lg font-semibold tracking-tight text-tinta">{titulo}</h3>
+                    <p class="mt-2 text-tinta-2">{descripcion}</p>
+                    <ul class="flex flex-wrap gap-1.5 mt-5">
+                        {tags.map((tag) => (
+                            <li class="px-2 py-0.5 text-xs rounded-md bg-superficie-2 text-tinta-2">{tag}</li>
+                        ))}
+                    </ul>
+                    <p class="pt-5 mt-auto text-sm font-medium">
+                        {enlace ? (
+                            <a class="inline-flex items-center gap-x-1 text-acento hover:underline" href={enlace} target="_blank" rel="noopener noreferrer">
+                                {t.verCodigo}
+                                <ArrowUpRight class="size-3.5" aria-hidden="true" />
+                            </a>
+                        ) : (
+                            <span class="text-tinta-2">{t.privado}</span>
+                        )}
+                    </p>
+                </div>
+            </li>
+        ))
+    }
+</ul>
