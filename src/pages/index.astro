@@ -13,9 +13,11 @@ import Projects from "../components/Projects.astro";
 import CaseStudies from "../components/CaseStudies.astro";
 import Stack from "../components/Stack.astro";
 import Education from "../components/Education.astro";
+import LivePipeline from "../components/LivePipeline.astro";
 import Database from "../icons/Database.astro";
 import StackIcon from "../icons/Stack.astro";
 import School from "../icons/School.astro";
+import Activity from "../icons/Activity.astro";
 import { withBase } from "../utils/url";
 
 const Destacados = [
@@ -105,6 +107,21 @@ const Destacados = [
 				Omito nombres de clientes, bancos e información interna.
 			</p>
 			<CaseStudies />
+		</Section>
+
+		<Section class="pb-20" id="pipeline">
+			<h2 class="text-3xl md:text-4xl font-semibold mb-2 flex gap-x-3 items-center text-blue-950">
+				<Activity class="size-7 shrink-0" />
+				Pipeline en vivo
+			</h2>
+			<p class="mb-6 text-base text-blue-950/80 max-w-[700px]">
+				Un ETL en Python que corre cada lunes con GitHub Actions: descarga
+				indicadores económicos públicos de Chile, valida su calidad con
+				Pandas, actualiza un histórico versionado en Git y vuelve a publicar
+				este sitio. Si un dato no pasa las validaciones, el pipeline se
+				detiene sin publicar nada.
+			</p>
+			<LivePipeline />
 		</Section>
 
 		<Section class="pb-20" id="stack">

@@ -1,5 +1,5 @@
 ---
-import ArrowRight from "../icons/ArrowRight.astro";
+import Flow from "./Flow.astro";
 
 // Casos basados en mi trabajo actual. Los nombres de clientes, bancos y
 // sistemas internos se omiten a propósito.
@@ -64,14 +64,7 @@ const Casos = [
             <article class="p-5 bg-white rounded-lg shadow-md">
                 <h3 class="mb-3 text-xl font-semibold text-blue-800">{title}</h3>
 
-                <ol class="flex flex-wrap items-center gap-y-2 mb-4 text-xs font-medium" aria-label="Flujo de datos">
-                    {flow.map((paso, i) => (
-                        <li class="flex items-center">
-                            {i > 0 && <ArrowRight class="size-4 mx-1 text-blue-400" aria-hidden="true" />}
-                            <span class="px-2 py-1 text-blue-900 border border-blue-200 rounded-md bg-blue-50">{paso}</span>
-                        </li>
-                    ))}
-                </ol>
+                <Flow pasos={flow} />
 
                 <dl class="space-y-2 text-base text-blue-950">
                     <div>

@@ -1,0 +1,18 @@
+---
+import ArrowRight from "../icons/ArrowRight.astro";
+
+interface Props {
+    pasos: string[];
+}
+const { pasos } = Astro.props;
+---
+
+<!-- PASOS DE UN FLUJO DE DATOS, UNIDOS POR FLECHAS -->
+<ol class="flex flex-wrap items-center gap-y-2 mb-4 text-xs font-medium" aria-label="Flujo de datos">
+    {pasos.map((paso, i) => (
+        <li class="flex items-center">
+            {i > 0 && <ArrowRight class="size-4 mx-1 text-blue-400" aria-hidden="true" />}
+            <span class="px-2 py-1 text-blue-900 border border-blue-200 rounded-md bg-blue-50">{paso}</span>
+        </li>
+    ))}
+</ol>
