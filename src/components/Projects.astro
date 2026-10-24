@@ -32,26 +32,58 @@ const Tags: Record<string, Tag> = {
         name: "GitHub Actions",
         class: "bg-gray-800 text-white",
     },
+    Python: {
+        name: "Python",
+        class: "bg-yellow-400 text-blue-950",
+    },
+    Django: {
+        name: "Django",
+        class: "bg-green-800 text-white",
+    },
+    Postgres: {
+        name: "PostgreSQL (Supabase)",
+        class: "bg-emerald-600 text-white",
+    },
+    Vercel: {
+        name: "Vercel",
+        class: "bg-black text-white",
+    },
 };
 
-const Proyectos = [
+interface Proyecto {
+    title: string;
+    description: string;
+    img?: string;
+    link?: string;
+    tags: Tag[];
+}
+
+const Proyectos: Proyecto[] = [
     {
-        title: "Desarrollo de Sitio Web Personal con Astro y TailwindCSS",    
-        description: "Sitio web personal desarrollado con Astro y Tailwind CSS, con integración y despliegue continuo en GitHub Pages mediante GitHub Actions.",
+        title: "Sitio web personal con Astro y Tailwind CSS",
+        description: "Este mismo sitio: estático, responsive y con integración y despliegue continuo en GitHub Pages mediante GitHub Actions (chequeo de tipos, build y verificación de enlaces en cada cambio).",
         img: withBase("/projects/portfolio.webp"),
         link: "https://github.com/DanielPonsG/Portfolio-dev",
         tags: [Tags.Astro, Tags.Tailwind, Tags.Actions],
     },
+    {
+        title: "SAM · Sistema de gestión académica",
+        description: "Aplicación web full stack para colegios: estudiantes, profesores, asignaturas, notas, asistencia, calendario y libro de anotaciones, con permisos por rol (dirección, profesores y apoderados). Base de datos PostgreSQL en Supabase y despliegue en Vercel. Repositorio privado.",
+        tags: [Tags.Python, Tags.Django, Tags.Postgres, Tags.Vercel],
+    },
 ];
 ---
 
+<div class="flex flex-col gap-6">
 {
     Proyectos.map(({title, description, img, link, tags}) => (
         <article class="max-w-full overflow-hidden p-4 bg-white rounded-lg shadow-md dark:bg-gray-800">
             <h3 class="text-lg font-semibold text-blue-800 mb-2">
-                <a href={link} target="_blank" rel="noopener noreferrer" class="hover:underline">
-                    {title}
-                </a>
+                {link ? (
+                    <a href={link} target="_blank" rel="noopener noreferrer" class="hover:underline">
+                        {title}
+                    </a>
+                ) : title}
             </h3>
             <p class="mb-4 text-base font-normal text-blue-950">{description}</p>
             <ul class="flex flex-wrap gap-2 flex-row mb-2">
@@ -64,14 +96,17 @@ const Proyectos = [
                     </li>
                 ))}
             </ul>
-            <div class="relative w-full h-0 pb-[56.25%] overflow-hidden">
-                <img
-                class="absolute top-0 left-0 w-full h-full object-cover rounded-sm border border-gray-200 dark:border-gray-700 hover:scale-105 transition-all"
-                src={img}
-                alt={title}
-            />
-            </div>
-           
+            {img && (
+                <div class="relative w-full h-0 pb-[56.25%] overflow-hidden">
+                    <img
+                        class="absolute top-0 left-0 w-full h-full object-cover rounded-sm border border-gray-200 dark:border-gray-700 hover:scale-105 transition-all"
+                        src={img}
+                        alt={title}
+                        loading="lazy"
+                    />
+                </div>
+            )}
         </article>
     ))
 }
+</div>

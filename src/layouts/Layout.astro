@@ -29,6 +29,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={new URL(withBase("/projects/portfolio.webp"), Astro.site)} />
 
 		<title>{title}</title>
 	</head>
