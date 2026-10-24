@@ -7,6 +7,13 @@ updates:
     groups:
       dependencias:
         patterns: ["*"]
+    ignore:
+      # @astrojs/check todavía no admite TypeScript 7.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
+      # Los tipos se mantienen en la versión mínima de Node soportada (22).
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /

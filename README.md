@@ -12,7 +12,7 @@ Publicado en **https://danielponsg.github.io/Portfolio-dev/**
 
 ## Desarrollo local
 
-Requiere Node.js 22.12 o superior (ver `.nvmrc`).
+Requiere Node.js 22.12 o superior. CI usa Node 24 LTS (ver `.nvmrc`).
 
 ```bash
 npm ci              # instala las dependencias exactas del lockfile
