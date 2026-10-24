@@ -62,7 +62,7 @@ jobs:
     steps:
       - name: Publicar
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
       # El CDN de Pages puede tardar unos segundos en servir la nueva versión.
       - name: Verificar sitio publicado
