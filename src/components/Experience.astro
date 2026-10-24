@@ -1,68 +1,35 @@
 ---
-export interface Props {
-    title: string;
-    date: string;
-    description: string | string[];
-    link?: string;
+import type { Idioma } from "../i18n";
+import { experiencia } from "../data/perfil";
+
+interface Props {
+    lang: Idioma;
 }
-const { title, date, link, description } = Astro.props;
+const { lang } = Astro.props;
 ---
 
-<span
-    class="absolute flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full -inset-s-3 ring-8 ring-blue-100 dark:ring-gray-900 dark:bg-blue-900"
->
-    <svg
-        class="w-2.5 h-2.5 text-blue-800 dark:text-blue-300"
-        aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-    >
-        <path
-            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"
-        ></path>
-    </svg>
-</span>
-<h3
-    class="flex items-center mb-1 text-lg font-semibold text-blue-800"
->
-    {title}
-</h3>
-<time
-    class="block mb-2 text-sm font-normal leading-none text-blue-700"
-    >{date}</time
->
-{
-    Array.isArray(description) ? (
-        <ul class="mb-4 list-disc space-y-1 ps-5 text-base font-normal text-blue-950">
-            {description.map((linea) => <li>{linea}</li>)}
-        </ul>
-    ) : (
-        <p class="mb-4 text-base font-normal text-blue-950">{description}</p>
-    )
-}
-
-
-<!-- SI HAY UN LINK, MOSTRAR BOTÓN DE ACCEDER -->
-{
-    link && (
-        <a
-            href={link}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-hidden focus:ring-gray-100 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-        >
-            <svg
-                class="w-3.5 h-3.5 me-2.5"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-            >
-                <path d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z" />
-                <path d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z" />
-            </svg>{" "}
-            Acceder
-        </a>
-    )
-}
+<!-- LÍNEA DE TIEMPO DE EXPERIENCIA LABORAL -->
+<ol class="relative border-s border-borde ms-2">
+    {
+        experiencia[lang].map(({ cargo, empresa, fecha, logros }, i) => (
+            <li class="pb-10 ps-7 last:pb-0">
+                <span
+                    class={`absolute -start-[7px] mt-1.5 size-3.5 rounded-full ring-4 ring-fondo ${i === 0 ? "bg-acento" : "bg-borde"}`}
+                    aria-hidden="true"
+                />
+                <p class="font-mono text-xs font-medium tracking-wide uppercase text-tinta-2">{fecha}</p>
+                <h3 class="mt-1 text-lg font-semibold md:text-xl text-tinta">
+                    {cargo} <span class="font-normal text-tinta-2">· {empresa}</span>
+                </h3>
+                <ul class="max-w-3xl mt-3 space-y-2 text-tinta-2">
+                    {logros.map((logro) => (
+                        <li class="flex gap-x-3">
+                            <span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-acento/60" aria-hidden="true" />
+                            <span>{logro}</span>
+                        </li>
+                    ))}
+                </ul>
+            </li>
+        ))
+    }
+</ol>

@@ -29,24 +29,44 @@ async function exists(path) {
 }
 
 const errores = [];
+const anclas = new Map();
+const idsDe = async (file) => {
+	if (!anclas.has(file)) {
+		const html = await readFile(file, 'utf8');
+		anclas.set(file, new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1])));
+	}
+	return anclas.get(file);
+};
 for (const file of await htmlFiles(DIST)) {
 	const html = await readFile(file, 'utf8');
-	const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
+	const ids = await idsDe(file);
 	for (const [, url] of html.matchAll(/\s(?:href|src)="([^"]+)"/g)) {
 		if (/^(https?:|mailto:|tel:|data:)/.test(url)) continue;
 		if (url.startsWith('#')) {
 			if (url.length > 1 && !ids.has(url.slice(1))) errores.push(`${file}: ancla inexistente ${url}`);
 			continue;
 		}
-		const path = url.split(/[?#]/)[0];
+		const [path, ancla] = url.split('?')[0].split('#');
 		if (!path.startsWith(`${BASE}/`) && path !== BASE) {
 			errores.push(`${file}: ruta fuera del base path ${url}`);
 			continue;
 		}
 		const relative = path.slice(BASE.length) || '/';
-		const target = relative.endsWith('/') ? join(DIST, relative, 'index.html') : join(DIST, relative);
-		if (!(await exists(target)) && !(await exists(join(DIST, relative, 'index.html')))) {
+		const candidatos = relative.endsWith('/') ? [join(DIST, relative, 'index.html')] : [join(DIST, relative), join(DIST, relative, 'index.html')];
+		let target = null;
+		for (const candidato of candidatos) {
+			if (await exists(candidato)) {
+				target = candidato;
+				break;
+			}
+		}
+		if (!target) {
 			errores.push(`${file}: no existe ${url}`);
+			continue;
+		}
+		// Un enlace como /Portfolio-dev/#casos también debe apuntar a una sección que exista.
+		if (ancla && target.endsWith('.html') && !(await idsDe(target)).has(ancla)) {
+			errores.push(`${file}: ancla inexistente ${url}`);
 		}
 	}
 }

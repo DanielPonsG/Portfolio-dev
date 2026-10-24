@@ -1,21 +1,101 @@
 @import 'tailwindcss';
 
-@custom-variant dark (&:is(.dark *));
+/* El tema oscuro se activa con la clase .dark en <html> (ver Layout.astro). */
+@custom-variant dark (&:where(.dark, .dark *));
 
 /*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
+  Tokens de diseño. Los componentes usan solo estos colores semánticos
+  (bg-fondo, text-tinta, border-borde...), así el modo oscuro se resuelve
+  aquí y no con variantes dark: repartidas por todo el código.
 */
+:root {
+  --fondo: #f6f7fb;
+  --superficie: #ffffff;
+  --superficie-2: #eef1fb;
+  --borde: #dfe4f0;
+  --tinta: #0f172a;
+  --tinta-2: #4a5568;
+  --acento: #2453d6;
+  --acento-tinta: #ffffff;
+  --acento-suave: #e0e8ff;
+  --vivo: #059669;
+  --resalte: #b45309;
+  color-scheme: light;
+}
+
+.dark {
+  --fondo: #0a0f1d;
+  --superficie: #111a2e;
+  --superficie-2: #16213a;
+  --borde: #26324f;
+  --tinta: #e7ebf5;
+  --tinta-2: #a3aec6;
+  --acento: #7aa2ff;
+  --acento-tinta: #0a0f1d;
+  --acento-suave: #1b2a50;
+  --vivo: #34d399;
+  --resalte: #fbbf24;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: 'Onest Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+  --color-fondo: var(--fondo);
+  --color-superficie: var(--superficie);
+  --color-superficie-2: var(--superficie-2);
+  --color-borde: var(--borde);
+  --color-tinta: var(--tinta);
+  --color-tinta-2: var(--tinta-2);
+  --color-acento: var(--acento);
+  --color-acento-tinta: var(--acento-tinta);
+  --color-acento-suave: var(--acento-suave);
+  --color-vivo: var(--vivo);
+  --color-resalte: var(--resalte);
+}
+
 @layer base {
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
+    border-color: var(--borde);
+  }
+
+  html {
+    background-color: var(--fondo);
+    color: var(--tinta);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--acento);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+}
+
+/* Saludo del avatar: la mano saluda cada cinco segundos. Con "reducir
+   movimiento" activado en el sistema, queda quieta. */
+@keyframes saludo {
+  0%, 50%, 100% { transform: rotate(0deg); }
+  8%, 24% { transform: rotate(18deg); }
+  16%, 32% { transform: rotate(-8deg); }
+  40% { transform: rotate(10deg); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mano-saludo {
+    transform-origin: 70% 85%;
+    animation: saludo 5s ease-in-out 0.4s infinite;
   }
 }
