@@ -1,0 +1,11 @@
+---
+import Caso from "../../../components/paginas/Caso.astro";
+import { casos } from "../../../data/casos";
+
+export function getStaticPaths() {
+    return casos.en.map(({ slug }) => ({ params: { slug } }));
+}
+const { slug } = Astro.params;
+---
+
+<Caso lang="en" slug={slug} />

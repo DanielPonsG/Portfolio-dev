@@ -2,6 +2,7 @@
 import process from 'node:process';
 import { defineConfig } from 'astro/config';
 
+import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
@@ -11,6 +12,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: process.env.SITE ?? 'https://danielponsg.github.io',
   base: process.env.BASE ?? '/Portfolio-dev',
+  integrations: [sitemap()],
   vite: {
     plugins: [tailwindcss()],
   },

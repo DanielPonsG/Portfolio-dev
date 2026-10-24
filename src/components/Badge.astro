@@ -1,10 +1,11 @@
-<div class="flex items-center ">
+<!-- ETIQUETA CON BORDE ANIMADO; SE DETIENE CON "REDUCIR MOVIMIENTO" -->
 <span class="relative inline-flex overflow-hidden rounded-full p-px">
-  <span
-    class="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#3b82f6_0%,#1e3a8a_50%,#3b82f6_100%)]"
-  ></span>
-  <div class="inline-flex items-center justify-center w-full px-3 py-1 text-sm text-blue-800 bg-blue-100 rounded-full cursor-pointer dark:bg-gray-800 dark:text-white/80 backdrop-blur-3xl whitespace-nowrap">
-    <slot />
-  </div>
+    <span
+        class="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] motion-reduce:animate-none bg-[conic-gradient(from_90deg_at_50%_50%,var(--acento)_0%,var(--acento-suave)_50%,var(--acento)_100%)]"
+        aria-hidden="true"
+    ></span>
+    <span class="relative inline-flex items-center gap-x-2 px-3 py-1 text-[11px] min-[360px]:text-xs font-medium rounded-full bg-superficie text-acento whitespace-nowrap">
+        <span class="size-1.5 rounded-full bg-vivo" aria-hidden="true"></span>
+        <slot />
+    </span>
 </span>
-</div>

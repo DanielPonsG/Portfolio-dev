@@ -1,0 +1,45 @@
+---
+import Flow from "./Flow.astro";
+import ArrowRight from "../icons/ArrowRight.astro";
+import { rutas, type Idioma } from "../i18n";
+import { ui } from "../i18n/ui";
+import { casos } from "../data/casos";
+
+interface Props {
+    lang: Idioma;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+
+<!-- CASOS EN CUADRÍCULA; EL PRIMERO OCUPA TODO EL ANCHO Y MUESTRA SU FLUJO -->
+<ul class="grid gap-4 md:grid-cols-2">
+    {
+        casos[lang].map((caso, i) => (
+            <li class={i === 0 ? "md:col-span-2" : ""}>
+                <a
+                    href={rutas.caso(lang, caso.slug)}
+                    class="flex flex-col h-full p-6 transition-colors border group rounded-2xl border-borde bg-superficie hover:border-acento"
+                >
+                    <p class="font-mono text-xs font-medium tracking-widest uppercase text-acento">{caso.area}</p>
+                    <h3 class="mt-2 text-lg font-semibold tracking-tight md:text-xl text-tinta">{caso.titulo}</h3>
+                    <p class="mt-2 text-tinta-2">{caso.resumen}</p>
+                    {i === 0 && (
+                        <div class="mt-5">
+                            <Flow pasos={caso.flujo} etiqueta={t.caso.flujo} />
+                        </div>
+                    )}
+                    <ul class="flex flex-wrap gap-1.5 mt-5" aria-label={t.caso.stack}>
+                        {caso.stack.slice(0, i === 0 ? caso.stack.length : 4).map((tecnologia) => (
+                            <li class="px-2 py-0.5 text-xs rounded-md bg-superficie-2 text-tinta-2">{tecnologia}</li>
+                        ))}
+                    </ul>
+                    <span class="inline-flex items-center pt-5 mt-auto text-sm font-medium gap-x-1 text-acento">
+                        {t.secciones.casos.verCaso}
+                        <ArrowRight class="transition-transform size-4 group-hover:translate-x-0.5" aria-hidden="true" />
+                    </span>
+                </a>
+            </li>
+        ))
+    }
+</ul>

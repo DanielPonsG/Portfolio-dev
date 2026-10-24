@@ -11,6 +11,19 @@ Publicado en **https://danielponsg.github.io/Portfolio-dev/**
 - GitHub Actions para CI/CD y GitHub Pages como hosting
 - Python 3.13, Pandas y pytest para el pipeline de datos
 
+## Estructura del sitio
+
+- Dos idiomas: español en `/` y en `/casos/<caso>/`, inglés en `/en/` y en `/en/cases/<caso>/`. Los textos de la
+  interfaz están en [`src/i18n/ui.ts`](src/i18n/ui.ts) y los contenidos (casos, experiencia, stack, proyectos y
+  formación) en [`src/data/`](src/data), siempre con una versión por idioma.
+- Modo claro y oscuro: los colores son variables CSS en [`src/styles/global.css`](src/styles/global.css). El sitio
+  sigue el tema del sistema hasta que el visitante elige uno, y la elección se guarda en `localStorage`.
+- Avatar 3D de [Fluent Emoji](https://github.com/microsoft/fluentui-emoji) (Microsoft, licencia MIT, ver
+  [`public/avatar/LICENSE.txt`](public/avatar/LICENSE.txt)). La animación del saludo se detiene si el sistema pide
+  reducir el movimiento.
+- SEO: `hreflang` entre idiomas, sitemap (`@astrojs/sitemap`), datos estructurados `Person` e imágenes para redes en
+  [`public/og/`](public/og).
+
 ## Desarrollo local
 
 Requiere Node.js 22.12 o superior (ver `.nvmrc`).
@@ -28,7 +41,8 @@ npm run preview     # sirve dist/ para revisar el resultado final
 
 El workflow [`ci-cd.yml`](.github/workflows/ci-cd.yml) corre en cada pull request y en cada push a `main`:
 
-1. `npm ci`, `astro check`, `astro build` y revisión de enlaces internos.
+1. `npm ci`, `astro check`, `astro build` y revisión de enlaces internos, incluidas las anclas a secciones de otras
+   páginas.
 2. Solo en `main`: publica `dist/` en GitHub Pages.
 
 Dependabot propone actualizaciones de dependencias y de las acciones de GitHub.

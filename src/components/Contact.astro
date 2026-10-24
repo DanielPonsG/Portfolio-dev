@@ -1,0 +1,64 @@
+---
+import Mail from "../icons/Mail.astro";
+import LinkedIn from "../icons/LinkedIn.astro";
+import GitHub from "../icons/GitHub.astro";
+import MapPin from "../icons/MapPin.astro";
+import Language from "../icons/Language.astro";
+import type { Idioma } from "../i18n";
+import { ui } from "../i18n/ui";
+
+interface Props {
+    lang: Idioma;
+}
+const { lang } = Astro.props;
+const t = ui[lang].secciones.contacto;
+const CORREO = "danielpons44@gmail.com";
+const boton =
+    "inline-flex items-center gap-x-2 h-11 px-5 rounded-lg border border-borde bg-superficie font-medium text-tinta hover:border-acento transition-colors";
+---
+
+<!-- CONTACTO -->
+<div class="relative p-6 overflow-hidden border sm:p-10 rounded-3xl border-borde bg-superficie">
+    <div
+        class="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_60%_80%_at_100%_0%,var(--acento-suave),transparent)]"
+        aria-hidden="true"
+    >
+    </div>
+    <div class="relative grid gap-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+        <div>
+            <h2 class="text-3xl font-semibold tracking-tight md:text-4xl text-tinta">{t.titulo}</h2>
+            <p class="max-w-xl mt-3 text-tinta-2">{t.intro}</p>
+            <div class="flex flex-wrap gap-3 mt-7">
+                <a
+                    href={`mailto:${CORREO}`}
+                    class="inline-flex items-center px-5 font-medium transition-opacity rounded-lg gap-x-2 h-11 bg-acento text-acento-tinta hover:opacity-90"
+                >
+                    <Mail class="size-4" aria-hidden="true" />
+                    {t.correo}
+                </a>
+                <a href="https://www.linkedin.com/in/danielponsg" target="_blank" rel="noopener noreferrer" class={boton}>
+                    <LinkedIn class="size-4" aria-hidden="true" />
+                    LinkedIn
+                </a>
+                <a href="https://github.com/DanielPonsG" target="_blank" rel="noopener noreferrer" class={boton}>
+                    <GitHub class="size-4" aria-hidden="true" />
+                    GitHub
+                </a>
+            </div>
+        </div>
+        <ul class="space-y-2 text-sm text-tinta-2">
+            <li class="flex items-center gap-x-2">
+                <Mail class="size-4 text-acento" aria-hidden="true" />
+                <a class="hover:text-acento" href={`mailto:${CORREO}`}>{CORREO}</a>
+            </li>
+            <li class="flex items-center gap-x-2">
+                <MapPin class="size-4 text-acento" aria-hidden="true" />
+                {t.ubicacion}
+            </li>
+            <li class="flex items-center gap-x-2">
+                <Language class="size-4 text-acento" aria-hidden="true" />
+                {t.idiomas}
+            </li>
+        </ul>
+    </div>
+</div>

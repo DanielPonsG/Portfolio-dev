@@ -1,11 +1,28 @@
 ---
-const { class: className, id } = Astro.props;
+interface Props {
+    id: string;
+    numero?: string;
+    titulo?: string;
+    intro?: string;
+    class?: string;
+}
+const { id, numero, titulo, intro, class: className = "" } = Astro.props;
 ---
 
-<!-- COMPONENTES DE LAS SECCIONES PARA REUTILIZAR -->
-<section
-    id={id}
-    class={`section ${className} scroll-m-20 w-full mx-auto container lg:max-w-4xl md:max-w-2xl `}
->
+<!-- SECCIÓN CON ENCABEZADO COMÚN: NÚMERO, TÍTULO E INTRODUCCIÓN -->
+<section id={id} class={`scroll-mt-24 w-full mx-auto max-w-5xl px-4 sm:px-6 ${className}`}>
+    {
+        titulo && (
+            <header class="mb-8">
+                {numero && (
+                    <p class="mb-2 font-mono text-xs font-medium tracking-widest uppercase text-acento">
+                        {numero} · {titulo}
+                    </p>
+                )}
+                <h2 class="text-3xl font-semibold tracking-tight md:text-4xl text-tinta">{titulo}</h2>
+                {intro && <p class="max-w-2xl mt-3 text-base text-tinta-2">{intro}</p>}
+            </header>
+        )
+    }
     <slot />
 </section>

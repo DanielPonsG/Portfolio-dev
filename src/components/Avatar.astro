@@ -1,0 +1,29 @@
+---
+import { withBase } from "../utils/url";
+
+interface Props {
+    alt: string;
+    class?: string;
+}
+const { alt, class: className = "" } = Astro.props;
+---
+
+<!-- AVATAR 3D (FLUENT EMOJI) CON UNA MANO QUE SALUDA; ANIMACIÓN EN global.css -->
+<div class={`avatar relative shrink-0 ${className}`} role="img" aria-label={alt}>
+    <div class="absolute inset-0 rounded-full bg-linear-to-br from-acento-suave to-superficie-2 ring-1 ring-borde"></div>
+    <img
+        class="relative w-full h-full p-[12%] object-contain"
+        src={withBase("/avatar/tecnologo.webp")}
+        alt=""
+        width="256"
+        height="256"
+        fetchpriority="high"
+    />
+    <img
+        class="mano-saludo absolute -right-[14%] top-[2%] w-[48%] drop-shadow-md"
+        src={withBase("/avatar/saludo.webp")}
+        alt=""
+        width="256"
+        height="256"
+    />
+</div>
