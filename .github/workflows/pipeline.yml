@@ -28,7 +28,7 @@ jobs:
     name: Lint y pruebas
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v6
         with:
@@ -58,7 +58,7 @@ jobs:
       contents: write # commit del histórico actualizado
       actions: write # lanzar el despliegue del sitio
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v6
         with:
