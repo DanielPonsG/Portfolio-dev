@@ -19,7 +19,9 @@ interface Resumen {
     indicadores: Indicador[];
 }
 
-export const resumen = datos as Resumen;
+// TypeScript infiere cada punto de la serie como (string | number)[] y no como
+// tupla, así que el JSON se convierte pasando por unknown.
+export const resumen = datos as unknown as Resumen;
 
 // El pipeline publica los nombres en español; estos son los de la versión en inglés.
 const nombresEn: Record<string, string> = {
