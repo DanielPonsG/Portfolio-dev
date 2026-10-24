@@ -1,0 +1,15 @@
+[project]
+name = "indicadores"
+version = "0.1.0"
+description = "Pipeline ETL de indicadores económicos de Chile para el portafolio"
+requires-python = ">=3.13"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

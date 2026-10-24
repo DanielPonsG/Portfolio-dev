@@ -1,0 +1,90 @@
+name: Pipeline de indicadores
+
+# Cada lunes descarga los indicadores, los valida, actualiza el histórico en
+# data/ y vuelve a publicar el sitio. En los pull requests que tocan el
+# pipeline corre lint, pruebas y una extracción real sin escribir (dry run).
+on:
+  schedule:
+    - cron: "0 12 * * 1" # lunes 12:00 UTC (9:00 o 8:00 en Chile, según el horario)
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "pipeline/**"
+      - ".github/workflows/pipeline.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pipeline-indicadores
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: pipeline
+
+jobs:
+  pruebas:
+    name: Lint y pruebas
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version-file: pipeline/.python-version
+          cache: pip
+          cache-dependency-path: pipeline/requirements*.txt
+
+      - name: Instalar dependencias
+        run: pip install -r requirements-dev.txt
+
+      - name: Lint
+        run: ruff check . && ruff format --check .
+
+      - name: Pruebas
+        run: pytest
+
+      - name: Extraer y validar sin escribir
+        if: github.event_name == 'pull_request'
+        run: python -m indicadores --dry-run
+
+  ejecutar:
+    name: Ejecutar pipeline y publicar
+    needs: pruebas
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # commit del histórico actualizado
+      actions: write # lanzar el despliegue del sitio
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version-file: pipeline/.python-version
+          cache: pip
+          cache-dependency-path: pipeline/requirements*.txt
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Ejecutar pipeline
+        run: python -m indicadores
+
+      # Un push hecho con GITHUB_TOKEN no dispara otros workflows, así que el
+      # despliegue se lanza explícitamente con workflow_dispatch.
+      - name: Guardar histórico y publicar el sitio
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git add ../data/indicadores.csv ../src/data/indicadores.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios en los datos."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Actualizar indicadores económicos"
+          git push
+          gh workflow run ci-cd.yml --ref main
